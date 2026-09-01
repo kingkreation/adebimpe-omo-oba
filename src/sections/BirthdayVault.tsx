@@ -1,0 +1,15 @@
+import { motion, useReducedMotion } from 'framer-motion'
+import { BookOpen, Crown, LockKeyhole, Mail, Music2, ScrollText, Sparkles } from 'lucide-react'
+import { useState } from 'react'
+import { vaultItems, type VaultItem } from '../data/vault'
+import { secretById } from '../data/secrets'
+import { useLocalStorage } from '../hooks/useLocalStorage'
+import { addDiscovery, hasDiscovery } from '../utils/discoveries'
+import { vaultMessage } from '../utils/vault'
+const icons = { story: BookOpen, memory: Sparkles, letter: Mail, music: Music2, promise: ScrollText, future: LockKeyhole }
+export function BirthdayVault({ onAdvance, onBack, onNavigate }: { onAdvance: () => void; onBack: () => void; onNavigate: (chapter: VaultItem['linkedChapter']) => void }) {
+  const [opened, setOpened] = useLocalStorage('adebimpe.vaultOpened', false); const [discoveries, setDiscoveries] = useLocalStorage<string[]>('adebimpe.discoveries', []); const [notice, setNotice] = useState<string | null>(null); const [crownTaps, setCrownTaps] = useState(0); const reduceMotion = useReducedMotion()
+  const activate = (item: VaultItem) => { setOpened(true); if (item.status === 'unlocked' && item.linkedChapter) onNavigate(item.linkedChapter); else setNotice(vaultMessage(item)) }
+  const tapCrown = () => { const next = crownTaps + 1; setCrownTaps(next); const secret = secretById('crown-keeper'); if (next >= 5 && secret && !hasDiscovery(discoveries, secret.id)) { setDiscoveries((saved) => addDiscovery(saved, secret.id)); setNotice(secret.message) } }
+  return <main className="scene chapter-scene vault-scene"><p className="eyebrow">Chapter 15 · The Birthday Vault</p><motion.button className="vault-core" onClick={tapCrown} aria-label="A small crown for Adebimpe" initial={reduceMotion ? false : { opacity: 0, scale: .85 }} animate={{ opacity: 1, scale: 1 }}><Crown /><span>{opened ? 'Open' : 'For Adebimpe'}</span></motion.button><h1>Your little corner<br /><em>of my world.</em></h1><p className="chapter-lead">A growing collection of everything we keep close.</p><div className="vault-grid">{vaultItems.map((item) => { const Icon = icons[item.icon]; const unlocked = item.status === 'unlocked'; return <button key={item.id} className={`vault-item ${unlocked ? 'is-unlocked' : 'is-locked'}`} onClick={() => activate(item)} aria-label={`${item.title}. ${unlocked ? 'Open item' : 'Locked future memory'}`}><Icon /><span>{item.title}</span><small>{unlocked ? 'Open' : 'Locked'}</small></button> })}</div>{notice && <motion.p className="vault-notice" role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{notice}</motion.p>}<div className="chapter-actions"><button className="text-button compact" onClick={onBack}>Back</button><button className="primary-button" onClick={onAdvance}>Enter my corner</button></div></main>
+}

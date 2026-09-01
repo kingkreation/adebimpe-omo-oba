@@ -1,0 +1,9 @@
+import { motion, useReducedMotion } from 'framer-motion'
+import { Gift, PhoneCall } from 'lucide-react'
+import { useState } from 'react'
+import { birthdaySurpriseMemory } from '../data/memories'
+const beats = ['You’ve made me smile many times.', 'But there is one birthday memory I don’t want to forget.', 'On my birthday…', 'You surprised me.']
+export function BirthdaySurprise({ onAdvance, onBack }: { onAdvance: () => void; onBack: () => void }) {
+  const [step, setStep] = useState(0); const reduceMotion = useReducedMotion(); const revealed = step === beats.length
+  return <main className="scene chapter-scene surprise-scene"><p className="eyebrow">Chapter 07 · The Birthday Surprise</p>{!revealed ? <motion.section key={step} className="surprise-reveal" initial={reduceMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}><Gift /><h1>{beats[step]}</h1><div className="chapter-actions"><button className="text-button compact" onClick={step === 0 ? onBack : () => setStep((value) => value - 1)}>{step === 0 ? 'Back' : 'Previous'}</button><button className="primary-button" onClick={() => setStep((value) => value + 1)}>{step === beats.length - 1 ? 'Reveal it' : 'Continue'}</button></div></motion.section> : <motion.section className="surprise-memory" initial={reduceMotion ? false : { opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }}><PhoneCall /><p className="eyebrow">A call from you</p><h1>{birthdaySurpriseMemory.title}</h1><p>{birthdaySurpriseMemory.body}</p><div className="memory-detail"><p>Actually, I wasn't expecting it that day but it's a moment i can't forget.</p></div><button className="primary-button" onClick={onAdvance}>Hold this memory close</button></motion.section>}</main>
+}

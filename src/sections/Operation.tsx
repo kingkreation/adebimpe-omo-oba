@@ -1,0 +1,18 @@
+import { motion, useReducedMotion } from 'framer-motion'
+import { AlertTriangle, Moon, RotateCcw, ShieldAlert, Volume2 } from 'lucide-react'
+import { useEffect, useReducer } from 'react'
+import { operationCopy } from '../data/messages'
+import { initialMission, missionReducer } from '../utils/operationGame'
+
+export function Operation({ onAdvance, onBack }: { onAdvance: () => void; onBack: () => void }) {
+  const [mission, dispatch] = useReducer(missionReducer, initialMission); const reduceMotion = useReducedMotion()
+  useEffect(() => { if (mission.status !== 'calling') return; const id = window.setInterval(() => dispatch({ type: 'tick' }), 1000); return () => clearInterval(id) }, [mission.status])
+  const replay = () => dispatch({ type: 'reset' })
+  return <main className="scene chapter-scene operation-scene"><p className="eyebrow">Chapter 05 · A true story. 😂</p><h1>Operation:<br /><em>Don’t Let Mummy Hear Us</em></h1>
+    {mission.status === 'briefing' && <section className="mission-card"><ShieldAlert /><p className="eyebrow">Objective</p><h2>{operationCopy.objective}</h2><dl><div><dt>Call status</dt><dd>Offline</dd></div><div><dt>Volume</dt><dd>Low</dd></div><div><dt>Mission status</dt><dd>Ready</dd></div></dl><div className="chapter-actions"><button className="text-button compact" onClick={onBack}>Back</button><button className="primary-button" onClick={() => dispatch({ type: 'start' })}>Start secret call</button></div></section>}
+    {mission.status === 'calling' && <section className="mission-card active-mission"><p className="call-status">● Secret call connected</p><div className="mission-readout"><span><Volume2 /> Volume</span><b>{mission.volume}%</b></div><input aria-label="Secret call volume" type="range" min="0" max="100" value={mission.volume} onChange={(event) => dispatch({ type: 'set-volume', volume: Number(event.target.value) })} /><p className="safe-range">Keep it low. The safe zone is 0–55%.</p><div className="detection"><span>Detection meter</span><i><b style={{ width: `${mission.detection}%` }} /></i><small>{mission.detection}%</small></div>{mission.volume > 55 && <p className="warning"><AlertTriangle size={16} /> Easy… that is getting loud.</p>}<p className="mission-time">Night call: 00:{String(mission.seconds).padStart(2, '0')}</p></section>}
+    {mission.status === 'detected' && <motion.section className="mission-card detection-card" initial={reduceMotion ? false : { opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }}><AlertTriangle /><p className="eyebrow">Mummy detected 🚨</p><h2>Freeze.</h2><p>Pretend you’re sleeping. Take your time—choose the plan.</p><div className="chapter-actions"><button className="sleep-button" onClick={() => dispatch({ type: 'sleep' })}><Moon /> I’m sleeping</button><button className="text-button compact" onClick={() => dispatch({ type: 'caught' })}>I panicked</button></div></motion.section>}
+    {mission.status === 'failed' && <section className="mission-card outcome-card"><p className="eyebrow">Mission failed 😂</p><h2>She caught you.</h2><p>It was worth a try. No villains here—just a very suspicious late-night call.</p><button className="primary-button" onClick={replay}><RotateCcw size={16} /> Try again</button></section>}
+    {mission.status === 'success' && <motion.section className="mission-card outcome-card" initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}><p className="eyebrow">Mission complete</p><h2>Somehow, we survived another night. 😂</h2><p>{operationCopy.ending}</p><div className="chapter-actions"><button className="text-button compact" onClick={replay}>Replay</button><button className="primary-button" onClick={onAdvance}>Continue</button></div></motion.section>}
+  </main>
+}

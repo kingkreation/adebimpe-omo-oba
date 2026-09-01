@@ -1,0 +1,7 @@
+import { motion, useReducedMotion } from 'framer-motion'
+import { useState } from 'react'
+import { letterLines } from '../data/messages'
+export function TheLetter({ onAdvance, onBack }: { onAdvance: () => void; onBack: () => void }) {
+  const [line, setLine] = useState(0); const reduceMotion = useReducedMotion(); const last = line === letterLines.length - 1
+  return <main className="scene chapter-scene letter-scene"><p className="eyebrow">Chapter 11 · The Letter</p><section className="letter-sheet"><motion.p key={line} className={`letter-line ${last ? 'letter-yet' : ''}`} initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>{letterLines[line]}</motion.p><div className="letter-dots" aria-label={`Line ${line + 1} of ${letterLines.length}`}>{letterLines.map((_, index) => <i className={index <= line ? 'read' : ''} key={index} />)}</div><div className="chapter-actions"><button className="text-button compact" onClick={line === 0 ? onBack : () => setLine((value) => value - 1)}>{line === 0 ? 'Back' : 'Previous'}</button><button className="primary-button" onClick={last ? onAdvance : () => setLine((value) => value + 1)}>{last ? 'Look ahead' : 'Continue'}</button></div></section></main>
+}
