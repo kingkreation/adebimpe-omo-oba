@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#100d0d"/>
+  
+  <!-- Outer glow circle -->
+  <circle cx="128" cy="128" r="110" fill="none" stroke="#e8c678" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Inner circle -->
+  <circle cx="128" cy="128" r="95" fill="rgba(232, 198, 120, 0.15)" stroke="#e8c678" stroke-width="3"/>
+  
+  <!-- Central heart shape -->
+  <g transform="translate(128, 130)">
+    <!-- Heart symbol -->
+    <path d="M 0,-8 C -8,-16 -20,-16 -20,-4 C -20,8 0,24 0,24 C 0,24 20,8 20,-4 C 20,-16 8,-16 0,-8 Z" fill="#e8c678"/>
+  </g>
+  
+  <!-- Decorative dots -->
+  <circle cx="60" cy="60" r="4" fill="#d9b96f" opacity="0.6"/>
+  <circle cx="196" cy="60" r="4" fill="#d9b96f" opacity="0.6"/>
+  <circle cx="60" cy="196" r="4" fill="#d9b96f" opacity="0.6"/>
+  <circle cx="196" cy="196" r="4" fill="#d9b96f" opacity="0.6"/>
+</svg>
