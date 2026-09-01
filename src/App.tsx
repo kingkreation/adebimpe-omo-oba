@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { Home } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState, type ComponentType } from 'react'
 import { Atmosphere } from './components/Atmosphere'
 import { MusicProvider } from './components/MusicPlayer'
@@ -67,7 +68,7 @@ export function App() {
   useEffect(() => () => window.clearTimeout(transitionTimerRef.current), [])
   useEffect(() => { const id = requestAnimationFrame(() => stageRef.current?.focus()); return () => cancelAnimationFrame(id) }, [flow.scene])
   const Scene = flow.scene === 'loading' || flow.scene === 'complete' ? null : scenes[flow.scene]
-  return <MusicProvider><div className="app-shell" data-experience-mode={birthdayMode ? 'birthday' : 'corner'}><Atmosphere /><Progress position={chapter.position} total={chapterCount} /><AnimatePresence mode="wait">
+  return <MusicProvider><div className="app-shell" data-experience-mode={birthdayMode ? 'birthday' : 'corner'}><Atmosphere /><button type="button" className="home-button" onClick={onRelive} aria-label="Return to home"><Home size={20} /></button><Progress position={chapter.position} total={chapterCount} /><AnimatePresence mode="wait">
     {flow.scene === 'loading' && <CinematicLoader key="loader" durationMs={loaderDurationMs} onComplete={onAdvance} />}
     {Scene && <motion.div key={flow.scene} ref={stageRef} className={`stage${isTransitioning ? ' is-transitioning' : ''}`} tabIndex={-1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><Scene onAdvance={onAdvance} onBack={onBack} onNavigate={onNavigate} onRelive={onRelive} /></motion.div>}
     {flow.scene === 'complete' && <motion.main key="complete" ref={stageRef} tabIndex={-1} className="scene soon"><p className="eyebrow">Phase 5A complete</p><h1>Your corner<br /><em>is always here.</em></h1></motion.main>}
